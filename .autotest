@@ -1,0 +1,17 @@
+Autotest.add_hook :initialize do |at|
+  # Set up mapping for extensions.
+  # When foo.so is changed, rerun all specs under spec/ext/foo/.
+  at.add_mapping(/\/([^\/]*).so$/) do |f, m|
+    ext = m[1]
+    r = Regexp.new("ext/#{ext}/.*_spec\.rb$")
+    at.files_matching r
+  end  
+
+  # Set up mapping for spec helpers.
+  # When foo/spec_helper.rb is changed, rerun all specs under foo/.
+  # Doesn't do anything; not sure why.
+  # at.add_mapping(/^(.*)\/spec_helper.rb$/) do |f, m|
+  #   dir = m[1]
+  #   Dir["#{dir}/**/*.rb"]
+  # end
+end
