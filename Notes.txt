@@ -1,0 +1,7 @@
+This code:
+
+  robot :fred do
+    adapter :aria
+  end
+
+creates a new robot named 'fred' using the Aria adapter.  This means that fred will be a Rubot::Adapters::Aria::Robot, a subclass of Rubot::Robot.

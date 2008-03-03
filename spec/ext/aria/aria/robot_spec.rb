@@ -1,5 +1,7 @@
 require File.join(File.dirname(__FILE__), %w[.. spec_helper])
 
+unless $spec_skip
+
 describe Aria::Robot do
   it "should be createable" do
     lambda { Aria::Robot.new }.should_not raise_error(TypeError)
@@ -9,4 +11,6 @@ describe Aria::Robot do
     r = Aria::Robot.new
     lambda { r.addRangeDevice }.should_not raise_error(NoMethodError)
   end
+end
+
 end
