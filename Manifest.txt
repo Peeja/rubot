@@ -3,8 +3,17 @@ Manifest.txt
 README.txt
 Rakefile
 bin/rubot
+ext/aria/aria.cpp
+ext/aria/extconf.rb
 lib/rubot.rb
+lib/rubot/meta.rb
+lib/rubot/robot.rb
+spec/ext/aria/aria/robot_spec.rb
+spec/ext/aria/aria_spec.rb
+spec/ext/aria/spec_helper.rb
+spec/rubot/spec_helper.rb
 spec/rubot_spec.rb
+spec/spec.opts
 spec/spec_helper.rb
 tasks/ann.rake
 tasks/annotations.rake

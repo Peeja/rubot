@@ -1,3 +1,8 @@
+----
+Notes
+  This file should not be included in distributions.
+----
+
 This code:
 
   robot :fred do
@@ -5,3 +10,12 @@ This code:
   end
 
 creates a new robot named 'fred' using the Aria adapter.  This means that fred will be a Rubot::Adapters::Aria::Robot, a subclass of Rubot::Robot.
+
+
+Rubot API:
+
+  Rubot.add_robot(name, adapter, options={})
+    Creates a new robot with given name using given adapter.
+  
+  Rubot.robots
+    Returns the robots currently in service.

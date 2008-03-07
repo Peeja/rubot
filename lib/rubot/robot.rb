@@ -1,0 +1,3 @@
+class Rubot::Robot
+  
+end

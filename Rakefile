@@ -17,4 +17,8 @@ PROJ.rubyforge_name = 'rubot'
 
 PROJ.spec_opts << '--color'
 
+# Don't expect test coverage of any file with an absolute path.
+PROJ.rcov_opts << '--exclude' << '^/' << '--exclude' << 'meta.rb$'
+PROJ.rcov_threshold_exact = true
+
 # EOF
