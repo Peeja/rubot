@@ -1,0 +1,3 @@
+== Writing a Rubot Adapter
+
+FIXME (stub)

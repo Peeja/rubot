@@ -10,7 +10,7 @@ const char *convertBool(Object /* self */, int val) {
 }
 
 extern "C"
-void Init_aria()
+void Init_rubot_aria()
 {
   Module rb_MAria =
     define_module("Aria")

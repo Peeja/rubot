@@ -21,4 +21,6 @@ PROJ.spec_opts << '--color'
 PROJ.rcov_opts << '--exclude' << '^/' << '--exclude' << 'meta.rb$'
 PROJ.rcov_threshold_exact = true
 
+PROJ.exclude << '^.git/' << '.gitignore$' << '.DS_Store$'
+
 # EOF

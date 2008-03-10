@@ -7,4 +7,4 @@ unless have_library('Aria')
   exit
 end
 
-create_makefile('aria')
+create_makefile('rubot_aria')
