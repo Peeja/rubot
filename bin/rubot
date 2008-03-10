@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 
-require File.expand_path(
-    File.join(File.dirname(__FILE__), '..', 'lib', 'rubot'))
+require 'rubygems'
+require 'main'
 
-# Put your code here
-
-# EOF
+Main do
+  argument 'definition' do
+    required
+  end
+end
