@@ -1,4 +1,7 @@
 Autotest.add_hook :initialize do |at|
+  # Ignore the ._* files TextMate likes to leave about.
+  at.add_exception(/\/\._[^\/]*$/)
+  
   # Set up mapping for extensions.
   # When foo.so is changed, rerun all specs under spec/ext/foo/.
   at.add_mapping(/\/([^\/]*).so$/) do |f, m|

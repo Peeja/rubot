@@ -1,2 +1,3 @@
 --color
 -rrubygems
+-rspec/load_paths

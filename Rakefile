@@ -15,7 +15,7 @@ PROJ.email = 'peter.a.jaros@gmail.com'
 PROJ.url = 'FIXME (project homepage)'
 PROJ.rubyforge_name = 'rubot'
 
-PROJ.spec_opts << '--color'
+PROJ.spec_opts += File.read('spec/spec.opts').split
 
 # Don't expect test coverage of any file with an absolute path.
 PROJ.rcov_opts << '--exclude' << '^/' << '--exclude' << 'meta.rb$'
