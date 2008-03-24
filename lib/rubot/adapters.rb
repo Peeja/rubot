@@ -1,4 +1,5 @@
 require 'facets/string/case'
+require 'facets/module/alias'
 
 # This module contains the robotics adapters.  For instance, the ACME 
 # Robotics adapter would be <tt>Rubot::Adapters::AcmeRobotics</tt>.  Its robot 
@@ -12,17 +13,26 @@ require 'facets/string/case'
 #     robot :fred do
 #       adapter :acme_robotics
 #     end
-module Adapters
+module Rubot
   # Raised when attempting to create a robot with an unrecognized adapter.
   class AdapterMissingError < Exception; end
-
-  def self.const_missing(name)
-    begin
-      little_name = name.to_s.snakecase
-      require "rubot/adapters/#{little_name}"
-      return get_const(name)
-    rescue LoadError, NameError
-      raise AdapterMissingError, "Adapter #{mod_name} not found."
+  
+  module Adapters
+    class << self
+      def const_missing_with_autoload(name)
+        begin
+          req_name = "rubot/adapters/#{name.to_s.snakecase}"
+          require req_name
+          if const_defined? name
+            return const_get(name)
+          else
+            raise AdapterMissingError, "Adapter #{name} not loaded by '#{req_name}'."
+          end
+        rescue LoadError
+          raise AdapterMissingError, "Adapter #{name} not found."
+        end
+      end
+      alias_method_chain :const_missing, :autoload
     end
   end
 end

@@ -1,16 +1,12 @@
-require File.join(File.dirname(__FILE__), %w[.. spec_helper])
-
-unless $spec_skip
+require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
 
 describe Rubot::Adapters::Aria::Robot do
-  it "should be createable" do
-    lambda { Aria::Robot.new }.should_not raise_error(TypeError)
+  before(:each) do
+    @robot = Rubot::Adapters::Aria::Robot.new
   end
   
-  it "should let us add a range device" do
-    r = Aria::Robot.new
-    lambda { r.addRangeDevice }.should_not raise_error(NoMethodError)
+  it "should have options array" do
+    @robot.options << :be_awesome
+    @robot.options.should include(:be_awesome)
   end
-end
-
 end

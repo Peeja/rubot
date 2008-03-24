@@ -16,6 +16,7 @@ PROJ.url = 'FIXME (project homepage)'
 PROJ.rubyforge_name = 'rubot'
 
 PROJ.spec_opts += File.read('spec/spec.opts').split
+PROJ.spec_opts << '-fs'
 
 # Don't expect test coverage of any file with an absolute path.
 PROJ.rcov_opts << '--exclude' << '^/' << '--exclude' << 'meta.rb$'
