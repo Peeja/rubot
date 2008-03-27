@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[.. .. spec_helper])
+require File.join(File.dirname(__FILE__), %w[.. .. .. spec_helper])
 
 describe Rubot::Adapters::Aria::RobotManager do
   it "should be creatable" do

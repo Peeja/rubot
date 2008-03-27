@@ -1,7 +1,9 @@
 # $Id$
 
-require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib rubot]))
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), %w[.. ext rubot_aria])
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), %w[.. ext rubot_asimov])
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), %w[.. lib])
+require 'rubot'
 
 Spec::Runner.configure do |config|
   # == Mock Framework

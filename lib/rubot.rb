@@ -8,22 +8,8 @@ unless defined? Rubot
 
 require 'rubot/adapters'
 require 'rubot/meta'
-require 'rubot/robot'
 
 module Rubot  
-  # Returns a hash of the robots Rubot knows about.
-  #     my_favorite_bot = Rubot.robots[:fred]
-  def self.robots
-    @@robots ||= {}
-  end
-  
-  # Creates a new robot named +name+ using the adapter +adapter+ and adds it
-  # to Rubot.
-  def self.add_robot(name, adapter)
-    mod_name = adapter.to_s.camelcase(true).to_sym
-    
-    robots[name] = Adapters.const_get(mod_name).const_get(:Robot).new name
-  end
 end
 
 end
