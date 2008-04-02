@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), %w[.. .. .. spec_helper])
 
 # fred = Rubot::Adapters::Aria::Robot.new
-# fred.options[:host] = localhost
+# fred.options[:host] = 'localhost'
 
 include Rubot::Adapters::Aria
 
@@ -22,5 +22,11 @@ describe Robot do
     @robot.run
   end
   
-  # Test args
+  it "should connect to the specified host" do
+    @robot.options[:host] = 'robothost'
+    @mock_manager.should_receive(:go).with(/-rh robothost/)
+    @robot.run
+  end
+  
+  # Add serial connection support.
 end

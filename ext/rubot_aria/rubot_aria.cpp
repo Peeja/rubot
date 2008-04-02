@@ -1,15 +1,18 @@
+#include <csignal>
+#include <iostream>
 #include "rice/Module.hpp"
 #include "rice/Data_Type.hpp"
 #include "rice/Constructor.hpp"
 #include "Aria.h"
 
+using namespace std;
 using namespace Rice;
 
 // Initializes Aria if it hasn't been done already.
 void ensureAriaInit()
 {
 	static char inited = 0;
-	if (!inited) Aria::init();
+	if (!inited) Aria::init(Aria::SIGHANDLE_NONE);
 	inited = 1;
 }
 
@@ -61,6 +64,12 @@ private:
 	ArRobot myRobot;
 };
 
+// Not working yet
+// void handler(int signum)
+// {
+// 	cout << "Got signal." << endl;
+// }
+
 RARobotManager::RARobotManager()
 			  : myRobot() {}
 
@@ -75,6 +84,10 @@ void RARobotManager::go(const char *argString="")
 	// TODO: Handle connection error
 	conn.connectRobot(&myRobot);
 	myRobot.enableMotors();
+	
+	// Not working yet.
+	// signal(SIGINT, handler);
+	
 	myRobot.run(true);
 }
 

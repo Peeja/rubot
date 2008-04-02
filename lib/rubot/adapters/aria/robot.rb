@@ -8,7 +8,9 @@ module Rubot::Adapters::Aria
     end
   
     def run
-      @manager.go ""
+      args = ''
+      args << "-rh #{@options[:host]}" if @options[:host]
+      @manager.go args
     end
   end
 end
