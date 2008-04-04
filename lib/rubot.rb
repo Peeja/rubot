@@ -2,8 +2,6 @@
 # (Dir[File.join(::File.dirname(__FILE__), '**', '*.rb')] -
 #  Dir[File.join(::File.dirname(__FILE__), 'rubot', 'adapters', '**')]).sort.each {|rb| require rb}
 
-require 'facets/string/case'
-
 unless defined? Rubot
 
 require 'rubot/adapters'

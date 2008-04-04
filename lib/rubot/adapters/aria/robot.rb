@@ -9,8 +9,11 @@ module Rubot::Adapters::Aria
   
     def run
       args = ''
-      args << "-rh #{@options[:host]}" if @options[:host]
-      @manager.go args
+      args << "-remoteHost #{@options[:host]} " if @options[:host]
+      args << "-remoteRobotTcpPort #{@options[:port]} " if @options[:port]
+      Thread.new do
+        @manager.go args
+      end
     end
   end
 end

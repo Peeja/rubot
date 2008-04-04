@@ -8,7 +8,7 @@ include Rubot::Adapters::Aria
 describe Robot do
   before(:each) do
     @mock_manager = mock("manager")
-    RobotManager.should_receive(:new).and_return(@mock_manager)
+    RobotManager.stub!(:new).and_return(@mock_manager)
     @robot = Robot.new
   end
   
@@ -24,9 +24,15 @@ describe Robot do
   
   it "should connect to the specified host" do
     @robot.options[:host] = 'robothost'
-    @mock_manager.should_receive(:go).with(/-rh robothost/)
+    @mock_manager.should_receive(:go).with(/-remoteHost robothost/)
     @robot.run
   end
   
+  it "should connect to the specified port" do
+    @robot.options[:port] = 3456
+    @mock_manager.should_receive(:go).with(/-remoteRobotTcpPort 3456/)
+    @robot.run
+  end
+
   # Add serial connection support.
 end

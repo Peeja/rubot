@@ -1,4 +1,4 @@
-require 'facets/string/case'
+require 'facets/string/snakecase'
 require 'facets/module/alias'
 
 # This module contains the robotics adapters.  For instance, the ACME 
