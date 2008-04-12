@@ -11,9 +11,7 @@ module Rubot::Adapters::Aria
       args = ''
       args << "-remoteHost #{@options[:host]} " if @options[:host]
       args << "-remoteRobotTcpPort #{@options[:port]} " if @options[:port]
-      Thread.new do
-        @manager.go args
-      end
+      @manager.go args
     end
   end
 end
