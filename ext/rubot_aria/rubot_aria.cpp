@@ -3,6 +3,7 @@
 #include "rice/Module.hpp"
 #include "rice/Data_Type.hpp"
 #include "rice/Constructor.hpp"
+#include "rice/Exception.hpp"
 #include "Aria.h"
 
 using namespace std;
@@ -18,34 +19,51 @@ void ensureAriaInit()
 
 
 /* 
- * RAAction
+ * RAGenericAction
  * Generic ArAction that runs a Ruby proc when it fires.
  * 
  */
 
-class RAAction : public ArAction
+class RAGenericAction : public ArAction
 {
 public:
-  RAAction(const char *name);
-  virtual ~RAAction(void) {};
+  RAGenericAction(const char *name);
+  virtual ~RAGenericAction(void) {};
   virtual ArActionDesired *fire(ArActionDesired currentDesired);
+  void setFireProc(Object proc);
 
 protected:
   ArActionDesired myDesired;
+  Object *myProcP;
 };
 
-RAAction::RAAction(const char *name)
+RAGenericAction::RAGenericAction(const char *name)
                  : ArAction(name)
-{}
+{
+    ArLog::log(ArLog::Normal, "Created generic action \"%s\".", name);
+    myProcP = NULL;
+}
 
-ArActionDesired *RAAction::fire(ArActionDesired currentDesired)
+ArActionDesired *RAGenericAction::fire(ArActionDesired currentDesired)
 {
     myDesired.reset();
     myDesired.merge(&currentDesired);
-    
+        
+    if (myProcP != NULL)
+        myProcP->call("call");
     
     return &myDesired;
 }
+
+void RAGenericAction::setFireProc(Object proc)
+{
+    if (!proc.is_a(rb_cProc))
+        throw Exception(rb_eArgError, "proc needs to be a Proc.");
+    if (myProcP != NULL)
+        delete myProcP;
+    myProcP = new Object(proc);
+}
+
 
 
 /* 
@@ -60,6 +78,7 @@ public:
     RARobotManager();
     void go(const char *argString);
     void stop();
+    void addAction(RAGenericAction *action, int priority);
 
 private:
     ArRobot myRobot;
@@ -112,6 +131,11 @@ void RARobotManager::stop()
 }
 
 
+void RARobotManager::addAction(RAGenericAction *action, int priority)
+{
+    ArLog::log(ArLog::Normal, "Adding action \"%s\" with priority %d.", action->getName(), priority);
+    myRobot.addAction(action, priority);
+}
 
 
 extern "C"
@@ -126,9 +150,16 @@ void Init_rubot_aria()
   
     // Define Rubot::Adapters::Aria::RobotManager.
     // Rubot::Adapters::Aria::Robot is defined in Ruby and uses this class.
-    Data_Type<RARobotManager> rb_cAriaRobot = Module(rb_MAria)
-                                              .define_class<RARobotManager>("RobotManager")
-                                              .define_constructor(Constructor<RARobotManager>())
-                                              .define_method("go",&RARobotManager::go)
+    Data_Type<RARobotManager> rb_cRobotManager = Module(rb_MAria)
+                                                 .define_class<RARobotManager>("RobotManager")
+                                                 .define_constructor(Constructor<RARobotManager>())
+                                                 .define_method("go",&RARobotManager::go)
+                                                 .define_method("add_behavior", &RARobotManager::addAction)
+                                                 ;
+    
+    Data_Type<RAGenericAction> rb_cBehavior = Module(rb_MAria)
+                                              .define_class<RAGenericAction>("Behavior")
+                                              .define_constructor(Constructor<RAGenericAction, const char *>())
+                                              .define_method("set_fire_proc", &RAGenericAction::setFireProc)
                                               ;
 }

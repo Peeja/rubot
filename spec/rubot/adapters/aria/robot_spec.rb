@@ -34,5 +34,5 @@ describe Robot do
     @robot.run
   end
 
-  # Add serial connection support.
+  # TODO: Add serial connection support.
 end
