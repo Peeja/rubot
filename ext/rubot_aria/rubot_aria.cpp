@@ -28,9 +28,10 @@ class RAGenericAction : public ArAction
 {
 public:
   RAGenericAction(const char *name);
-  virtual ~RAGenericAction(void) {};
+  virtual ~RAGenericAction(void);
   virtual ArActionDesired *fire(ArActionDesired currentDesired);
   void setFireProc(Object proc);
+  virtual void setRobot(ArRobot *robot);
 
 protected:
   ArActionDesired myDesired;
@@ -42,6 +43,13 @@ RAGenericAction::RAGenericAction(const char *name)
 {
     ArLog::log(ArLog::Normal, "Created generic action \"%s\".", name);
     myProcP = NULL;
+}
+
+RAGenericAction::~RAGenericAction()
+{
+    if (myProcP != NULL)
+        delete myProcP;
+    ArLog::log(ArLog::Normal, "Destroyed generic action \"%s\".", getName());
 }
 
 ArActionDesired *RAGenericAction::fire(ArActionDesired currentDesired)
@@ -64,6 +72,13 @@ void RAGenericAction::setFireProc(Object proc)
     myProcP = new Object(proc);
 }
 
+void RAGenericAction::setRobot(ArRobot *robot)
+{
+    ArAction::setRobot(robot);
+    ArLog::log(ArLog::Normal, "Setting robot for action \"%s\".", getName());
+    
+}
+
 
 
 /* 
@@ -76,6 +91,7 @@ class RARobotManager
 {
 public:
     RARobotManager();
+    virtual ~RARobotManager();
     void go(const char *argString);
     void stop();
     void addAction(RAGenericAction *action, int priority);
@@ -95,7 +111,15 @@ private:
 RARobotManager::RARobotManager()
               : myRobot(), myStopCB(this, &RARobotManager::stop)
 {
+    ArLog::log(ArLog::Normal, "Created robot manager.");
     myRobotKeyHandlerP = NULL;
+}
+
+RARobotManager::~RARobotManager()
+{
+    if (myRobotKeyHandlerP != NULL)
+        delete myRobotKeyHandlerP;
+    ArLog::log(ArLog::Normal, "Destroyed robot manager.");
 }
 
 // Connect to robot and run.
@@ -127,7 +151,10 @@ void RARobotManager::stop()
 {
     myRobot.stopRunning();
     if (myRobotKeyHandlerP != NULL)
+    {
         delete myRobotKeyHandlerP;
+        myRobotKeyHandlerP = NULL;
+    }
 }
 
 

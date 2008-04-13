@@ -2,9 +2,19 @@
 
 require 'rubygems'
 require 'main'
+require 'rubot'
 
-Main do
-  argument 'definition' do
-    required
-  end
-end
+# Main do
+#   argument 'file' do
+#     required
+#     description 'Rubot file to run'
+#   end
+#   
+#   def run
+#     include Rubot::DSL
+#     load params['file']
+#   end
+# end
+
+include Rubot::DSL
+load ARGV[0]

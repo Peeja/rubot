@@ -4,10 +4,11 @@
 
 unless defined? Rubot
 
-require 'rubot/adapters'
+module Rubot; end
+
 require 'rubot/meta'
 
-module Rubot  
-end
+require 'rubot/adapters'
+require 'rubot/dsl'
 
 end
