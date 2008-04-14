@@ -1,8 +1,36 @@
 require 'facets/string/camelcase'
 
 module Rubot::DSL
+  BehaviorFactories = {}
   Robots = {}
-  Behaviors = {}
+  
+  class BehaviorFactoryBuilder
+    def initialize(name, &block)
+      @name = name.to_sym
+      self.instance_eval(&block)
+    end
+    
+    def fire(&block)
+      @fire = block
+    end
+    
+    def build
+      BehaviorFactory.new(@name, @fire)
+    end
+  end
+  
+  class BehaviorFactory
+    def initialize(name, fire)
+      @name = name
+      @fire = fire
+    end
+    
+    def create_for_adapter(adapter)
+      behavior = Rubot::Adapters.const_get(adapter)::Behavior.new @name.to_s
+      behavior.set_fire_proc @fire
+      behavior
+    end
+  end
   
   class RobotBuilder
     def initialize(name, &block)
@@ -29,41 +57,22 @@ module Rubot::DSL
       raise "Robot #{@name} declared without an adapter." unless @adapter
       robot = Rubot::Adapters.const_get(@adapter)::Robot.new
       robot.options.merge! @options
-      @behaviors.each { |n, p| robot.add_behavior Behaviors[n], p }
+      @behaviors.each do |name, priority|
+        b = BehaviorFactories[name].create_for_adapter(@adapter)
+        robot.add_behavior b, priority
+      end
       robot
     end
   end
   
-  class BehaviorBuilder
-    def initialize(name, &block)
-      @name = name.to_sym
-      self.instance_eval(&block)
-    end
-    
-    def adapter(name)
-      @adapter = name.to_s.camelcase(true).to_sym
-    end
-    
-    def fire(&block)
-      @fire = block
-    end
-    
-    def build
-      raise "Behavior #{@name} declared without an adapter." unless @adapter
-      behavior = Rubot::Adapters.const_get(@adapter)::Behavior.new @name.to_s
-      behavior.set_fire_proc @fire
-      behavior
-    end
+  def behavior(name, &block)
+    bb = BehaviorFactoryBuilder.new(name, &block)
+    BehaviorFactories[name.to_sym] = bb.build
   end
   
   def robot(name, &block)
     rb = RobotBuilder.new(name, &block)
     Robots[name.to_sym] = rb.build
-  end
-  
-  def behavior(name, &block)
-    bb = BehaviorBuilder.new(name, &block)
-    Behaviors[name.to_sym] = bb.build
   end
   
   def run(name)
