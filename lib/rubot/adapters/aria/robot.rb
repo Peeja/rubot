@@ -18,5 +18,9 @@ module Rubot::Adapters::Aria
       raise ArgumentError, "Behavior must be an Aria::Behavior" unless behavior.instance_of? Behavior
       @manager.add_behavior(behavior, priority)
     end
+    
+    def add_sensor(sensor)
+      @manager.add_sensor(sensor)
+    end
   end
 end

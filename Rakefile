@@ -22,6 +22,6 @@ PROJ.spec_opts << '-fs'
 PROJ.rcov_opts << '--exclude' << '^/' << '--exclude' << 'meta.rb$'
 PROJ.rcov_threshold_exact = true
 
-PROJ.exclude << '^.git/' << '.gitignore$' << '.DS_Store$'
+PROJ.exclude << '^\.git/' << '\.gitignore$' << '/\.DS_Store$' << '^\.DS_Store$' << '/\._' << '^\._' << 'mkmf.log'
 
 # EOF

@@ -20,7 +20,8 @@ module Rubot
   module Adapters
     class << self
       def const_missing_with_autoload(name)
-        begin
+        # TODO: Handle missing adapter without obscuring all LoadErrors.
+        # begin
           req_name = "rubot/adapters/#{name.to_s.snakecase}"
           require req_name
           if const_defined? name
@@ -28,9 +29,9 @@ module Rubot
           else
             raise AdapterMissingError, "Adapter #{name} not loaded by '#{req_name}'."
           end
-        rescue LoadError
-          raise AdapterMissingError, "Adapter #{name} not found."
-        end
+        # rescue LoadError
+        #   raise AdapterMissingError, "Adapter #{name} not found."
+        # end
       end
       alias_method_chain :const_missing, :autoload
     end
