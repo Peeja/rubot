@@ -76,7 +76,15 @@ void RAGenericAction::setRobot(ArRobot *robot)
 Object RAGenericAction::getSensor(Symbol sensor)
 {
     if (sensor == Symbol("sonar") && mySonar)
+        // FIXME: Is this bad memory management?
         return Data_Object<RARangeDevice>(mySonar);
     else
         return Object(Qnil);
+}
+
+Object RAGenericAction::getActionDesired()
+{
+    return Data_Object<ArActionDesired>(&myDesired);
+    // return to_ruby<ArActionDesired *>(&myDesired);
+    // return Object(Qnil);
 }

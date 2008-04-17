@@ -2,6 +2,7 @@
 
 #include "rice/Array.hpp"
 #include "rice/Object.hpp"
+#include "rice/Data_Object.hpp"
 #include "Aria.h"
 
 #include "RARangeDevice.h"
@@ -21,7 +22,10 @@ public:
   void setFireProc(Rice::Object proc);
   void setSensors(Rice::Object sensors);
   Rice::Object getSensor(Rice::Symbol sensor);
+  // RARangeDevice *getSensor(Rice::Symbol sensor);
   virtual void setRobot(ArRobot *robot);
+  // ArActionDesired *getActionDesired() { return &myDesired; }
+  Rice::Object getActionDesired();
 
 protected:
   ArActionDesired myDesired;

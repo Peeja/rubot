@@ -6,7 +6,7 @@ require 'facets/module/alias'
 # class would be <tt>Rubot::Adapters::AcmeRobotics::Robot</tt>, and one can be
 # created with
 # 
-#     Rubot.add_robot(:fred, :acme_robotics)
+#     fred = Rubot::Adapters::AcmeRobotics::Robot.new
 # 
 # or, in Rubot syntax,
 # 

@@ -74,7 +74,9 @@ module Rubot::DSL
       end
     end
     
-    # def desired
+    def desired
+      @behavior.get_desired
+    end
   end
   
   class RobotBuilder
