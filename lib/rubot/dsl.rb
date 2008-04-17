@@ -6,8 +6,9 @@ module Rubot::DSL
   Robots = {}
   
   class BehaviorFactoryBuilder
-    def initialize(name, &block)
+    def initialize(name, args, &block)
       @name = name.to_sym
+      @args = args
       @sensors = []
       self.instance_eval(&block)
     end
@@ -36,29 +37,32 @@ module Rubot::DSL
     end
     
     def build
-      BehaviorFactory.new(@name, @fire, @sensors.uniq)
+      BehaviorFactory.new(@name, @args, @fire, @sensors.uniq)
     end
   end
   
   class BehaviorFactory
-    def initialize(name, fire, sensors)
+    def initialize(name, accepted_args, fire, sensors)
       @name = name
+      @accepted_args = accepted_args
       @fire = fire
       @sensors = sensors
     end
     
-    def create_for_robot(robot)
-      BehaviorContext.new(@name, @fire, @sensors, robot).behavior
+    def create_for_robot(robot, given_args={})
+      BehaviorContext.new(@name, @accepted_args, @fire, @sensors, robot, given_args).behavior
     end
   end
   
   class BehaviorContext
     attr_reader :behavior, :robot
-    def initialize(name, fire, sensors, robot)
+    def initialize(name, accepted_args, fire, sensors, robot, given_args={})
       @name = name
+      @accepted_args = accepted_args
       @fire = fire
       @sensors = sensors
       @robot = robot
+      @given_args = given_args
       @behavior = Rubot::Adapters.const_get(robot.adapter)::Behavior.new name.to_s
       # Have the behavior execute the fire proc in context of this object.
       @behavior.set_fire_proc Proc.new { self.instance_eval(&@fire) }
@@ -69,6 +73,8 @@ module Rubot::DSL
     def method_missing(sym, *args)
       if @sensors.include? sym
         @behavior.get_sensor(sym)
+      elsif @accepted_args.include? sym
+        @given_args[sym]
       else
         super
       end
@@ -99,9 +105,9 @@ module Rubot::DSL
     def sensors(*sensors)
       @sensors += sensors.map(&:to_sym)
     end
-    
-    def behavior(name, priority)
-      @behaviors << [name.to_sym, priority]
+        
+    def behaviors(&block)
+      @behaviors += RobotBehaviorsBuilder.new(&block).behaviors
     end
     
     def method_missing(opt, *args)
@@ -114,16 +120,34 @@ module Rubot::DSL
       robot = Rubot::Adapters.const_get(@adapter)::Robot.new
       robot.options.merge! @options
       @sensors.each { |s| robot.add_sensor s }
-      @behaviors.each do |name, priority|
-        b = BehaviorFactories[name].create_for_robot(self)
+      @behaviors.each do |name, priority, opts|
+        b = BehaviorFactories[name].create_for_robot(self, opts)
         robot.add_behavior b, priority
       end
       robot
     end
   end
   
+  # Builds up a list of behaviors for the robot.
+  class RobotBehaviorsBuilder
+    attr_reader :behaviors
+    def initialize(&block)
+      @behaviors = []
+      self.instance_eval(&block)
+    end
+    
+    def method_missing(name, opts={})
+      priority = opts.delete(:priority) do |_|
+        # TODO: raise hell if priority is not given.
+      end
+      @behaviors << [name.to_sym, priority, opts]
+    end
+  end
+  
   def behavior(name, &block)
-    bb = BehaviorFactoryBuilder.new(name, &block)
+    name, args = name.to_a.first if name.instance_of? Hash
+    args ||= []
+    bb = BehaviorFactoryBuilder.new(name, args, &block)
     BehaviorFactories[name.to_sym] = bb.build
   end
   
