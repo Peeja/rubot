@@ -35,6 +35,7 @@ void Init_rubot_aria()
                                                  .define_method("go", &RARobotManager::go)
                                                  .define_method("add_behavior", &RARobotManager::addAction)
                                                  .define_method("add_sensor", &RARobotManager::addSensor)
+                                                 .define_method("robot_radius", &RARobotManager::getRobotRadius)
                                                  ;
     
     Data_Type<RAGenericAction> rb_cBehavior = Module(rb_MAria)

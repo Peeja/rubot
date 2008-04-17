@@ -18,6 +18,7 @@ public:
     void stop();
     void addAction(RAGenericAction *action, int priority);
     void addSensor(Rice::Symbol sensor);
+    double getRobotRadius() { return myRobot.getRobotRadius(); }
 
 private:
     ArRobot myRobot;

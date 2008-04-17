@@ -22,5 +22,9 @@ module Rubot::Adapters::Aria
     def add_sensor(sensor)
       @manager.add_sensor(sensor)
     end
+    
+    def radius
+      @manager.robot_radius
+    end
   end
 end

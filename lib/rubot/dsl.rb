@@ -49,27 +49,27 @@ module Rubot::DSL
       @sensors = sensors
     end
     
-    def create_for_robot(robot, given_args={})
-      BehaviorContext.new(@name, @accepted_args, @fire, @sensors, robot, given_args).behavior
+    def create_for_robot(robot, adapter, given_args={})
+      BehaviorContext.new(@name, @accepted_args, @fire, @sensors, robot, adapter, given_args).behavior
     end
   end
   
   class BehaviorContext
     attr_reader :behavior, :robot
-    def initialize(name, accepted_args, fire, sensors, robot, given_args={})
+    def initialize(name, accepted_args, fire, sensors, robot, adapter, given_args={})
       @name = name
       @accepted_args = accepted_args
       @fire = fire
       @sensors = sensors
       @robot = robot
       @given_args = given_args
-      @behavior = Rubot::Adapters.const_get(robot.adapter)::Behavior.new name.to_s
+      @behavior = Rubot::Adapters.const_get(adapter)::Behavior.new name.to_s
       # Have the behavior execute the fire proc in context of this object.
       @behavior.set_fire_proc Proc.new { self.instance_eval(&@fire) }
       @behavior.set_sensors @sensors
     end
     
-    # Return the named sensor, if one is given.
+    # Return the named sensor or argument.
     def method_missing(sym, *args)
       if @sensors.include? sym
         @behavior.get_sensor(sym)
@@ -95,11 +95,10 @@ module Rubot::DSL
       self.instance_eval(&block)
     end
     
-    # Set the adapter for the robot, if name is given.  Otherwise, return the adapter
-    def adapter(name=nil)
+    # Set the adapter for the robot, if name is given.
+    def adapter(name)
       # TODO: Stop user from changing the adapter once set.
-      @adapter = name.to_s.camelcase(true).to_sym if name
-      @adapter
+      @adapter = name.to_s.camelcase(true).to_sym
     end
     
     def sensors(*sensors)
@@ -120,8 +119,8 @@ module Rubot::DSL
       robot = Rubot::Adapters.const_get(@adapter)::Robot.new
       robot.options.merge! @options
       @sensors.each { |s| robot.add_sensor s }
-      @behaviors.each do |name, priority, opts|
-        b = BehaviorFactories[name].create_for_robot(self, opts)
+      @behaviors.each do |name, priority, args|
+        b = BehaviorFactories[name].create_for_robot(robot, @adapter, args)
         robot.add_behavior b, priority
       end
       robot
@@ -136,11 +135,11 @@ module Rubot::DSL
       self.instance_eval(&block)
     end
     
-    def method_missing(name, opts={})
-      priority = opts.delete(:priority) do |_|
+    def method_missing(name, args={})
+      priority = args.delete(:priority) do |_|
         # TODO: raise hell if priority is not given.
       end
-      @behaviors << [name.to_sym, priority, opts]
+      @behaviors << [name.to_sym, priority, args]
     end
   end
   
