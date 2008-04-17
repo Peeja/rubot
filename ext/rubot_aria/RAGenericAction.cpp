@@ -30,7 +30,6 @@ RAGenericAction::~RAGenericAction()
 ArActionDesired *RAGenericAction::fire(ArActionDesired currentDesired)
 {
     myDesired.reset();
-    myDesired.merge(&currentDesired);
         
     if (myFireProc != NULL)
         myFireProc->call("call");
