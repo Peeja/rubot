@@ -1,3 +1,8 @@
+IMPORTANT:
+This version of Rubot is incomplete and presented publicly for the sole purpose (currently) of discussion and testing.  Many things are broken, many files are incomplete.  Even this README needs a good deal of work.
+
+=====
+
 rubot
     by FIXME (your name)
     FIXME (url)
@@ -26,7 +31,7 @@ FIXME (describe your package)
 
 (The MIT License)
 
-Copyright (c) 2008 FIXME (different license?)
+Copyright (c) 2008
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
