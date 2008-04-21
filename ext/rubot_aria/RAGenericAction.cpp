@@ -81,9 +81,17 @@ Object RAGenericAction::getSensor(Symbol sensor)
         return Object(Qnil);
 }
 
-Object RAGenericAction::getActionDesired()
-{
-    return Data_Object<ArActionDesired>(&myDesired);
-    // return to_ruby<ArActionDesired *>(&myDesired);
-    // return Object(Qnil);
-}
+// RARangeDevice *RAGenericAction::getSensor(Symbol sensor)
+// {
+//     if (sensor == Symbol("sonar") && mySonar)
+//         return mySonar;
+//     else
+//         return NULL;
+// }
+
+// Object RAGenericAction::getActionDesired()
+// {
+//     return Data_Object<ArActionDesired>(&myDesired);
+//     // return to_ruby<ArActionDesired *>(&myDesired);
+//     // return Object(Qnil);
+// }

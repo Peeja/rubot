@@ -24,8 +24,7 @@ public:
   Rice::Object getSensor(Rice::Symbol sensor);
   // RARangeDevice *getSensor(Rice::Symbol sensor);
   virtual void setRobot(ArRobot *robot);
-  // ArActionDesired *getActionDesired() { return &myDesired; }
-  Rice::Object getActionDesired();
+  ArActionDesired *getActionDesired() { return &myDesired; }
 
 protected:
   ArActionDesired myDesired;
@@ -35,3 +34,39 @@ protected:
   // Sensors
   RARangeDevice *mySonar;
 };
+
+
+// We need a disposable wrapper for ArActionDesired which Ruby can GC at its
+// pleasure.  This class delegates all calls to its wrapped ArActionDesired.
+// We have to duplicate the entirety of the interface we want Ruby to be able
+// to use.  It would be nice to automate this somehow with macros.
+
+class ArActionDesiredWrap
+{
+public:
+    ArActionDesiredWrap(ArActionDesired *obj) { myObj = obj; }
+    virtual ~ArActionDesiredWrap() {}
+    
+    double getVel() const { return myObj->getVel(); }
+    double getVelStrength() const { return myObj->getVelStrength(); }
+    void setVel(double vel, double strength) const { myObj->setVel(vel, strength); }
+
+    double getDeltaHeading() const { return myObj->getDeltaHeading(); }
+    double getDeltaHeadingStrength() const { return myObj->getDeltaHeadingStrength(); }
+    void setDeltaHeading(double deltaHeading, double strength) const { myObj->setDeltaHeading(deltaHeading, strength); }
+    
+    double getHeading() const { return myObj->getHeading(); }
+    double getHeadingStrength() const { return myObj->getHeadingStrength(); }
+    void setHeading(double heading, double strength) const { myObj->setHeading(heading, strength); }
+
+private:
+    ArActionDesired *myObj;
+};
+
+
+template<>
+inline
+Rice::Object to_ruby<ArActionDesired *>(ArActionDesired * const & x)
+{
+    return Rice::Data_Object<ArActionDesiredWrap>(new ArActionDesiredWrap(x));
+}
