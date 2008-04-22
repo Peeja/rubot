@@ -1,10 +1,10 @@
+#include "rice/Object.hpp"
 #include "rice/Data_Type.hpp"
 #include "rice/Symbol.hpp"
 #include "rice/Exception.hpp"
 #include "Aria.h"
 
 #include "RAGenericAction.h"
-#include "RARangeDevice.h"
 
 using namespace Rice;
 
@@ -22,15 +22,18 @@ RAGenericAction::~RAGenericAction()
 {
     if (myFireProc != NULL)
         delete myFireProc;
-    if (mySonar != NULL)
-        delete mySonar;
     ArLog::log(ArLog::Normal, "Destroyed generic action \"%s\".", getName());
 }
 
 ArActionDesired *RAGenericAction::fire(ArActionDesired currentDesired)
 {
     myDesired.reset();
-        
+    
+    // FIXME: myFireProc eventually has type 0 (T_NONE), and calling #call segfaults.
+    // Only happens when multiple behaviors are used at once.
+    // if (myFireProc != NULL && myFireProc->rb_type() == 0)
+    //     ArLog::log(ArLog::Normal, "Proc has type: %d.", myFireProc->rb_type());
+    
     if (myFireProc != NULL)
         myFireProc->call("call");
     
@@ -64,10 +67,7 @@ void RAGenericAction::setRobot(ArRobot *robot)
     for (Array::iterator it = mySensors.begin(); it != mySensors.end(); ++it) {
         if (*it == Symbol("sonar")) {
             ArLog::log(ArLog::Normal, "Adding sonar.");
-            if (mySonar != NULL)
-                delete mySonar;
-            ArRangeDevice *ariaSonar = robot->findRangeDevice("sonar");
-            mySonar = (ariaSonar ? new RARangeDevice(ariaSonar) : NULL);
+            mySonar = robot->findRangeDevice("sonar");
         }
     }
 }
@@ -75,23 +75,7 @@ void RAGenericAction::setRobot(ArRobot *robot)
 Object RAGenericAction::getSensor(Symbol sensor)
 {
     if (sensor == Symbol("sonar") && mySonar)
-        // FIXME: Is this bad memory management?
-        return Data_Object<RARangeDevice>(mySonar);
+        return to_ruby(mySonar);
     else
         return Object(Qnil);
 }
-
-// RARangeDevice *RAGenericAction::getSensor(Symbol sensor)
-// {
-//     if (sensor == Symbol("sonar") && mySonar)
-//         return mySonar;
-//     else
-//         return NULL;
-// }
-
-// Object RAGenericAction::getActionDesired()
-// {
-//     return Data_Object<ArActionDesired>(&myDesired);
-//     // return to_ruby<ArActionDesired *>(&myDesired);
-//     // return Object(Qnil);
-// }

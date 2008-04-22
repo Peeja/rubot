@@ -7,7 +7,6 @@
 
 #include "RAGenericAction.h"
 #include "RARobotManager.h"
-#include "RARangeDevice.h"
 
 using namespace std;
 using namespace Rice;
@@ -57,8 +56,8 @@ void Init_rubot_aria()
                                                        .define_method("set_heading", &ArActionDesiredWrap::setHeading)
                                                        ;
 
-    Data_Type<RARangeDevice> rb_cRangeDevice = Module(rb_MAria)
-                                               .define_class<RARangeDevice>("RangeDevice")
-                                               .define_method("range", &RARangeDevice::range)
-                                               ;
+    Data_Type<ArRangeDeviceWrap> rb_cRangeDevice = Module(rb_MAria)
+                                                   .define_class<ArRangeDeviceWrap>("RangeDevice")
+                                                   .define_method("range", &ArRangeDeviceWrap::currentReadingPolar)
+                                                   ;
 }

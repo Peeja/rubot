@@ -5,8 +5,6 @@
 #include "rice/Data_Object.hpp"
 #include "Aria.h"
 
-#include "RARangeDevice.h"
-
 /* 
  * RAGenericAction
  * Generic ArAction that runs a Ruby proc when it fires.
@@ -22,7 +20,6 @@ public:
   void setFireProc(Rice::Object proc);
   void setSensors(Rice::Object sensors);
   Rice::Object getSensor(Rice::Symbol sensor);
-  // RARangeDevice *getSensor(Rice::Symbol sensor);
   virtual void setRobot(ArRobot *robot);
   ArActionDesired *getActionDesired() { return &myDesired; }
 
@@ -32,7 +29,7 @@ protected:
   Rice::Array mySensors;
   
   // Sensors
-  RARangeDevice *mySonar;
+  ArRangeDevice *mySonar;
 };
 
 
@@ -63,10 +60,35 @@ private:
     ArActionDesired *myObj;
 };
 
-
 template<>
 inline
 Rice::Object to_ruby<ArActionDesired *>(ArActionDesired * const & x)
 {
     return Rice::Data_Object<ArActionDesiredWrap>(new ArActionDesiredWrap(x));
+}
+
+
+// We also need a wrapper for ArRangeDevice.
+
+class ArRangeDeviceWrap
+{
+public:
+    ArRangeDeviceWrap(ArRangeDevice *obj) { myObj = obj; }
+    virtual ~ArRangeDeviceWrap() { }
+    
+    double currentReadingPolar(double startAngle, double endAngle)
+    {
+        return myObj->currentReadingPolar(startAngle, endAngle, NULL);
+    }
+
+private:
+    ArRangeDevice *myObj;
+};
+
+
+template<>
+inline
+Rice::Object to_ruby<ArRangeDevice *>(ArRangeDevice * const & x)
+{
+    return Rice::Data_Object<ArRangeDeviceWrap>(new ArRangeDeviceWrap(x));
 }
