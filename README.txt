@@ -4,8 +4,8 @@ This version of Rubot is incomplete and presented publicly for the sole purpose 
 =====
 
 rubot
-    by FIXME (your name)
-    FIXME (url)
+    by Peter Jaros (Peeja) <peter.a.jaros@gmail.com>
+    http://rubot.org/ (pending)
 
 == DESCRIPTION:
 
@@ -17,7 +17,7 @@ FIXME (describe your package)
 
 == SYNOPSIS:
 
-  FIXME (code sample of usage)
+  rubot mycode.rbt
 
 == REQUIREMENTS:
 

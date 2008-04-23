@@ -3,6 +3,3 @@
 doc
 coverage
 pkg
-
-# Used locally for testing Rubot.  Convenient to keep it in the tree.
-test.rb

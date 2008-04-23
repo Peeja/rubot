@@ -1,0 +1,60 @@
+# navigate.rbt
+
+# Make a behavior to go forward, slowing when we approach an obstacle.
+
+behavior :go => [:max_speed, :stop_distance] do
+  sensors :sonar
+  
+  fire do
+    range = sonar.range(-70,70) - robot.radius
+    if range > stop_distance
+      speed = range * 0.3
+      speed = max_speed if (speed > max_speed)
+      desired.velocity = speed
+    else
+      desired.velocity = 0
+    end
+  end
+end
+
+
+# Make another behavior to turn us around objects we can avoid.
+
+behavior :turn => [:turn_threshold, :turn_amount] do
+  sensors :sonar
+  
+  fire do
+    # Get the left readings and right readings off of the sonar
+    left_range = sonar.range(0,100) - robot.radius
+    right_range = sonar.range(-100,0) - robot.radius
+    if left_range > turn_threshold && right_range > turn_threshold
+      # if neither left nor right range is within the turn threshold,
+      # reset the turning variable and don't turn
+      turn_direction = nil
+      desired.delta_heading = 0;
+    else
+      turn_direction ||= (left_range < right_range ? :left : :right)
+      desired.delta_heading = turn_amount * ( turn_direction == :left ? -1 : 1 )
+    end
+  end
+end
+
+
+# Set up a robot.
+
+robot :fred do
+  adapter :aria
+  host 'localhost'
+  
+  sensors :sonar
+  
+  behaviors do
+    go :priority => 50, :max_speed => 240, :stop_distance => 300
+    turn :priority => 49, :turn_threshold => 400, :turn_amount => 10
+  end
+end
+
+
+# Run it.
+
+run :fred

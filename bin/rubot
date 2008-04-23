@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'main'
+# require 'main'
 require 'rubot'
 
 # Main do

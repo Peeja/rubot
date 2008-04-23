@@ -12,8 +12,12 @@ task :default => 'spec:run'
 PROJ.name = 'rubot'
 PROJ.authors = 'Peter Jaros (Peeja)'
 PROJ.email = 'peter.a.jaros@gmail.com'
-PROJ.url = 'FIXME (project homepage)'
-PROJ.rubyforge_name = 'rubot'
+PROJ.url = 'http://rubot.org/'
+# PROJ.rubyforge_name = 'rubot'
+PROJ.version = Rubot.version
+
+PROJ.executables = ['rubot']
+PROJ.dependencies << ['rice', '>= 1.0.1'] << ['facets', '>= 2.3.0']
 
 PROJ.spec_opts += File.read('spec/spec.opts').split
 PROJ.spec_opts << '-fs'
