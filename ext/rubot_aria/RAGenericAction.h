@@ -3,6 +3,7 @@
 #include "rice/Array.hpp"
 #include "rice/Object.hpp"
 #include "rice/Data_Object.hpp"
+#include "rice/Address_Registration_Guard.hpp"
 #include "Aria.h"
 
 /* 
@@ -26,6 +27,7 @@ public:
 protected:
   ArActionDesired myDesired;
   Rice::Object *myFireProc;
+  Rice::Address_Registration_Guard *myFireProc_guard;
   Rice::Array mySensors;
   
   // Sensors

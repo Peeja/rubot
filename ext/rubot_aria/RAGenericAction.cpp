@@ -13,6 +13,7 @@ RAGenericAction::RAGenericAction(const char *name)
 {
     ArLog::log(ArLog::Normal, "Created generic action \"%s\".", name);
     myFireProc = NULL;
+    myFireProc_guard = NULL;
     
     // Sensors
     mySonar = NULL;
@@ -20,8 +21,10 @@ RAGenericAction::RAGenericAction(const char *name)
 
 RAGenericAction::~RAGenericAction()
 {
-    if (myFireProc != NULL)
+    if (myFireProc != NULL) {
         delete myFireProc;
+        delete myFireProc_guard;
+    }
     ArLog::log(ArLog::Normal, "Destroyed generic action \"%s\".", getName());
 }
 
@@ -44,9 +47,12 @@ void RAGenericAction::setFireProc(Object proc)
 {
     if (!proc.is_a(rb_cProc))
         throw Exception(rb_eArgError, "proc needs to be a Proc.");
-    if (myFireProc != NULL)
+    if (myFireProc != NULL) {
         delete myFireProc;
+        delete myFireProc_guard;
+    }
     myFireProc = new Object(proc);
+    myFireProc_guard = new Address_Registration_Guard(myFireProc);
 }
 
 void RAGenericAction::setSensors(Object sensors)
