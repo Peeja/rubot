@@ -1,4 +1,3 @@
-(in /home/peeja/rubot)
 Gem::Specification.new do |s|
   s.name = %q{rubot}
   s.version = "0.5.0"
